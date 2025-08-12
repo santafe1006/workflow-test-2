@@ -7,7 +7,7 @@ on:
 
 permissions:
   id-token: write
-  content: read
+  contents: read
 
 jobs:
   deploy:
@@ -27,14 +27,14 @@ jobs:
         run: gcloud auth configure-docker asia-northeast1-docker.pkg.dev
 
       - name: Build Docker image
-        run: docker build -t asia-northeast1-docker.pkg.dev/deploytest-468812/deploytest:{{ github.sha }} .
+        run: docker build -t asia-northeast1-docker.pkg.dev/deploytest-468812/deploytest/test-supu:{{ github.sha }} .
 
       - name: Docker push
-        run: docker push asia-northeast1-docker.pkg.dev/deploytest-468812/deploytest:{{ github.sha }}
+        run: docker push asia-northeast1-docker.pkg.dev/deploytest-468812/deploytest/test-supu:{{ github.sha }}
 
       - name: Deploy to Cloud Run
         uses: google-github-actions/deploy-cloudrun@v2
         with:
           service: test-supu
           region: asia-northeast1
-          image: asia-northeast1-docker.pkg.dev/deploytest-468812/deploytest:{{ github.sha }}
+          image: asia-northeast1-docker.pkg.dev/deploytest-468812/deploytest/test-supu:{{ github.sha }}
