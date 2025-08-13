@@ -36,7 +36,7 @@ jobs:
 
       # Dockerイメージのビルドとプッシュ
       - name: Build and push Docker image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: . # Dockerfileがあるディレクトリを指定
           push: true # ビルド後にプッシュを実行
