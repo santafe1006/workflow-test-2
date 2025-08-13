@@ -23,14 +23,31 @@ jobs:
           workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.SERVICE_ACCOUNT_EMAIL }}
 
+      # - name: Configure Docker for Artifact Registry
+      #   run: gcloud auth configure-docker asia-northeast1-docker.pkg.dev
+
+      # Docker Buildxのセットアップ
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Artifact Registryへの認証
       - name: Configure Docker for Artifact Registry
         run: gcloud auth configure-docker asia-northeast1-docker.pkg.dev
 
-      - name: Build Docker image
-        run: docker build -t asia-northeast1-docker.pkg.dev/deploytest-468812/deploytest/test-supu:{{ github.sha }} .
+      # Dockerイメージのビルドとプッシュ
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: . # Dockerfileがあるディレクトリを指定
+          push: true # ビルド後にプッシュを実行
+          tags: asia-northeast1-docker.pkg.dev/deploytest-468812/deploytest/test-supu:${{ github.sha }}
 
-      - name: Docker push
-        run: docker push asia-northeast1-docker.pkg.dev/deploytest-468812/deploytest/test-supu:{{ github.sha }}
+
+      # - name: Build Docker image
+      #   run: docker build -t asia-northeast1-docker.pkg.dev/deploytest-468812/deploytest/test-supu:{{ github.sha }} .
+
+      # - name: Docker push
+      #   run: docker push asia-northeast1-docker.pkg.dev/deploytest-468812/deploytest/test-supu:{{ github.sha }}
 
       - name: Deploy to Cloud Run
         uses: google-github-actions/deploy-cloudrun@v2
